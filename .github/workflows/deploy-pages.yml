@@ -1,12 +1,10 @@
 name: Deploy to GitHub Pages
 
-# Automatically publishes the app to https://<your-username>.github.io/<repo-name>/
-# on every push to main. No build step needed -- this is a static site.
-
 on:
   push:
-    branches: ["main"]
-  workflow_dispatch: # allows manual "Run workflow" from the Actions tab
+    branches:
+      - main
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -14,29 +12,27 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
 
 jobs:
   deploy:
+    runs-on: ubuntu-latest
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Setup Pages
+      - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload site artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v4
         with:
-          # Deploy the whole repo root (index.html, css/, js/ live here).
-          # Hardware-only files (esp32_firmware/, server.py, Pi scripts)
-          # are harmless to include -- they're just static files nobody
-          # will link to from the deployed site.
           path: "."
 
       - name: Deploy to GitHub Pages
